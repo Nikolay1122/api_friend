@@ -1,0 +1,67 @@
+from urllib.parse import urlencode
+import requests
+import json
+
+# APP_ID = 6852591
+# AUTH_URL = 'https://oauth.vk.com/authorize'
+# auth_data = {
+#     'client_id': APP_ID,
+#     'display': 'page',
+#     'scope': 'status,friends',
+#     'response_type': 'token',
+#     'v': '5.92',
+# }
+#
+# # print('?'.join((AUTH_URL, urlencode(auth_data))))
+
+TOKEN = 'add6908899fa2bf8669aabc4ad18fc268b6ede65e6934e82f2bb3aae6a244e4c8e892ab6e0a1bed8108ee'
+
+# params = {
+#     'v': '5.92',
+#     'access_token': TOKEN
+# }
+# response = requests.get("https://api.vk.com/method/status.get", params)
+# print(response.json())
+
+
+class User():
+
+    def __init__(self, id):
+        self.id = id
+
+    def get_mutual_friends(self, friend_id):
+        params = {
+            'target_uid': friend_id,
+            'access_token': TOKEN,
+            'v': 5.92
+        }
+        url = ('https://api.vk.com/method/friends.getMutual?')
+        response = requests.get(url, params).json()
+        return (response)
+
+    def __and__(self, other):
+        params = {
+            'target_uid': other.id,
+            'access_token': TOKEN,
+            'v': 5.92
+        }
+        url = ('https://api.vk.com/method/friends.getMutual?')
+        response = requests.get(url, params).json()
+        list_id = response['response']
+        users = []
+        for id in list_id:
+            users.append(User(id))
+
+        return (users)
+
+    def __str__(self):
+        return ('https://www.vk.com/id' + str(self.id))
+
+
+me = User(132871995)
+
+friend = User(242886808)
+
+print(me)
+print(friend)
+print(me.get_mutual_friends(242886709))
